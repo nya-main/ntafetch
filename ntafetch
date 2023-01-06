@@ -5,34 +5,33 @@ YELOW="\E[1;33m"
 BLUE="\E[1;34m"
 PINK="\E[1;35m"
 RESET="\E[0m"
-if [ "$(uname -o)" == "Android" ];then
-    if [ "$(uname -m)" == "aarch64" ];then
-        echo -e "${BLUE}ARCH:${GREEN}$(uname -m)≈arm64${RESET}"
-    else
-        echo -e "${BLUE}ARCH:${GREEN}$(uname -m)${RESET}"
-    fi
-    echo -e "${BLUE}Kernel release:${GREEN}$(uname -r)${RESET}"
-    echo -e "${BLUE}Kernel version:${GREEN}$(uname -v)${RESET}"
-    echo -e "${BLUE}CPU:${GREEN}$(cat /proc/cpuinfo | grep Hardware)${RESET}"
-    echo -e "${BLUE}Android version:${GREEN}$(getprop ro.build.version.release)${RESET}"
-    echo -e "${BLUE}brand:${GREEN}$(getprop ro.vendor.product.brand)${RESET}"
-    echo -e "${BLUE}device model:${GREEN}$(getprop ro.product.model)${RESET}"
-    echo -e "${BLUE}fingerprint:${GREEN}$(getprop ro.build.fingerprint)${RESET}"
-    echo -e "${BLUE}device name:${GREEN}$(getprop persist.sys.device_name)${RESET}"
-    echo -e "${BLUE}Main ABI:${GREEN}$(getprop ro.product.cpu.abi)${RESET}"
-    echo -e "${BLUE}Support ABIS:${GREEN}$(getprop ro.product.cpu.abilist)${RESET}"
-    if [ "$(getprop ro.secureboot.lockstate)" == "locked" ];then
-        echo -e "${BLUE}Bootloader:${GREEN}LOCKED${RESET}"
-    else
-        echo -e "${BLUE}Bootloader:${RED}UNLOCKED${RESET}"
-    fi
-    if [ $(getprop sys.oem_unlock_allowed) = 0 ];then
-        echo -e "${BLUE}OEM unlock:${GREEN}UNALLOWED${RESET}"
-    else
-        echo -e "${BLUE}OEM unlock:${RED}ALLOWED${RESET}"
-    fi
-else
+if [ "$(uname -o)" != "Android" ];then
     echo -e "${RED}YOU'RE NOT RUNNING THIS PROGRAM IN ANDROID DEVICE!\n你没有使用安卓设备运行这个脚本！${RESET}"
     exit 0
+fi
+if [ "$(uname -m)" == "aarch64" ];then
+    echo -e "${BLUE}ARCH:${GREEN}$(uname -m)≈arm64${RESET}"
+else
+    echo -e "${BLUE}ARCH:${GREEN}$(uname -m)${RESET}"
+fi
+echo -e "${BLUE}Kernel release:${GREEN}$(uname -r)${RESET}"
+echo -e "${BLUE}Kernel version:${GREEN}$(uname -v)${RESET}"
+echo -e "${BLUE}CPU:${GREEN}$(cat /proc/cpuinfo | grep Hardware)${RESET}"
+echo -e "${BLUE}Android version:${GREEN}$(getprop ro.build.version.release)${RESET}"
+echo -e "${BLUE}brand:${GREEN}$(getprop ro.vendor.product.brand)${RESET}"
+echo -e "${BLUE}device model:${GREEN}$(getprop ro.product.model)${RESET}"
+echo -e "${BLUE}fingerprint:${GREEN}$(getprop ro.build.fingerprint)${RESET}"
+echo -e "${BLUE}device name:${GREEN}$(getprop persist.sys.device_name)${RESET}"
+echo -e "${BLUE}Main ABI:${GREEN}$(getprop ro.product.cpu.abi)${RESET}"
+echo -e "${BLUE}Support ABIS:${GREEN}$(getprop ro.product.cpu.abilist)${RESET}"
+if [ "$(getprop ro.secureboot.lockstate)" == "locked" ];then
+    echo -e "${BLUE}Bootloader:${GREEN}LOCKED${RESET}"
+else
+    echo -e "${BLUE}Bootloader:${RED}UNLOCKED${RESET}"
+fi
+if [ $(getprop sys.oem_unlock_allowed) = 0 ];then
+    echo -e "${BLUE}OEM unlock:${GREEN}UNALLOWED${RESET}"
+else
+    echo -e "${BLUE}OEM unlock:${RED}ALLOWED${RESET}"
 fi
 exit 0
