@@ -19,6 +19,7 @@ else
 fi
 echo -e "${BLUE}OS:${GREEN}$(uname -o)${RESET}"
 echo -e "${BLUE}ARCH:${GREEN}$(uname -m)${RESET}"
+echo -e "${BLUE}Android security pack version:${GREEN}$(getprop ro.build.version.security_patch)${RESET}"
 echo -e "${BLUE}Kernel release:${GREEN}$(uname -r)${RESET}"
 echo -e "${BLUE}Kernel version:${GREEN}$(uname -v)${RESET}"
 echo -e "${BLUE}Android version:${GREEN}$(getprop ro.build.version.release)${RESET}"
@@ -30,7 +31,7 @@ echo -e "${BLUE}device model:${GREEN}$(getprop ro.product.model)${RESET}"
 echo -e "${BLUE}fingerprint:${GREEN}$(getprop ro.build.fingerprint)${RESET}"
 echo -e "${BLUE}device name:${GREEN}$(getprop persist.sys.device_name)${RESET}"
 echo -e "${BLUE}locale:${GREEN}$(getprop ro.product.locale)${RESET}"
-echo -e "${BLUE}CPU Model:${GREEN}$(cat /proc/cpuinfo | grep Hardware | sed "s/.........://")${RESET}"
+echo -e "${BLUE}CPU Model:${GREEN}$(getprop ro.hardware)-$(getprop ro.board.platform)${RESET}"
 echo -e "${BLUE}Main ABI:${GREEN}$(getprop ro.product.cpu.abi)${RESET}"
 echo -e "${BLUE}Support ABIS:${GREEN}$(getprop ro.product.cpu.abilist)${RESET}"
 echo -e "${BLUE}Total Mem:${GREEN}`TM=$(free -m |grep "Mem" | awk '{print $2}') && echo ${TM}` MiB${RESET}"
@@ -41,18 +42,29 @@ exitstatus=$?
 if [ ${exitstatus} = 1 ];then
     echo -e "${BLUE}ROOT:${GREEN}No ROOT(2)${RESET}"
 else
-    echo -e "${BLUE}ROOT:${RED}Found ROOT${RESET}"
+    echo -e "${BLUE}ROOT:${RED}ROOTED${RESET}"
 fi
 if [ "$(getprop ro.secureboot.lockstate)" == "locked" ];then
     echo -e "${BLUE}Bootloader:${GREEN}LOCKED(3)${RESET}"
 else
     echo -e "${BLUE}Bootloader:${RED}UNLOCKED${RESET}"
 fi
-if [ $(getprop sys.oem_unlock_allowed) = 0 ];then
-    echo -e "${BLUE}OEM Unlock:${GREEN}UNALLOW${RESET}"
+if [ "$(getprop ro.oem_unlock_supported)" == "true" ];then
+    echo -e "${BLUE}OEM Unlock Support:${GREEN}Support${RESET}"
 else
-    echo -e "${BLUE}OEM Unlock:${RED}ALLOW${RESET}"
+    echo -e "${BLUE}OEM Unlock Support:${RED}Unsupport${RESET}"
 fi
+if [ $(getprop sys.oem_unlock_allowed) = 0 ];then
+    echo -e "${BLUE}OEM:${GREEN}UNALLOW${RESET}"
+else
+    echo -e "${BLUE}OEM:${RED}ALLOW${RESET}" 
+fi
+if [ "$(getprop init.svc.adbd)" == "stopped" ];then
+    echo -e "${BLUE}adbd service:${GREEN}$(getprop init.svc.adbd)${RESET}"
+else
+    echo -e "${BLUE}adbd service:${RED}$(getprop init.svc.adbd)${RESET}"
+fi
+
 echo -e "\n"
 echo -e "${GREEN}1)UNBELIEVABLE because of linux Kernel's Mem control${RESET}"
 echo -e "${GREEN}2)Maybe you disable the root permission of termux${RESET}"
