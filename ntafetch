@@ -9,11 +9,8 @@ if [ "$(uname -o)" != "Android" ];then
     echo -e "${RED}YOU'RE NOT RUNNING THIS PROGRAM IN ANDROID DEVICE!\n你没有使用安卓设备运行这个脚本！${RESET}"
     exit 0
 fi
-if [ "$(uname -m)" == "aarch64" ];then
-    echo -e "${BLUE}ARCH:${GREEN}$(uname -m)≈arm64${RESET}"
-else
-    echo -e "${BLUE}ARCH:${GREEN}$(uname -m)${RESET}"
-fi
+echo -e "${BLUE}OS:${GREEN}$(uname -o)${RESET}"
+echo -e "${BLUE}ARCH:${GREEN}$(uname -m)${RESET}"
 echo -e "${BLUE}Kernel release:${GREEN}$(uname -r)${RESET}"
 echo -e "${BLUE}Kernel version:${GREEN}$(uname -v)${RESET}"
 echo -e "${BLUE}CPU:${GREEN}$(cat /proc/cpuinfo | grep Hardware)${RESET}"
@@ -22,16 +19,21 @@ echo -e "${BLUE}brand:${GREEN}$(getprop ro.vendor.product.brand)${RESET}"
 echo -e "${BLUE}device model:${GREEN}$(getprop ro.product.model)${RESET}"
 echo -e "${BLUE}fingerprint:${GREEN}$(getprop ro.build.fingerprint)${RESET}"
 echo -e "${BLUE}device name:${GREEN}$(getprop persist.sys.device_name)${RESET}"
+echo -e "${BLUE}CPU Model:${GREEN}$(cat /proc/cpuinfo | grep Hardware | sed "s/.........://")${RESET}"
 echo -e "${BLUE}Main ABI:${GREEN}$(getprop ro.product.cpu.abi)${RESET}"
 echo -e "${BLUE}Support ABIS:${GREEN}$(getprop ro.product.cpu.abilist)${RESET}"
+echo -e "${BLUE}Total Mem:${GREEN}`TM=$(free -m |grep "Mem" | awk '{print $2}') && echo ${TM}` MiB${RESET}"
+echo -e "${BLUE}Used Mem:${GREEN}`UM=$(free -m |grep "Mem" | awk '{print $3}') && echo ${UM}` MiB${RESET}"
+echo -e "${BLUE}Free Mem:${GREEN}`FM=$(free -m |grep "Mem" | awk '{print $4}') && echo ${FM}` MiB${RESET}"
+echo -e "${BLUE}Mem Usage(%):${GREEN}`scale=2;${TM}/${UM} | bc`${RESET}"
 if [ "$(getprop ro.secureboot.lockstate)" == "locked" ];then
     echo -e "${BLUE}Bootloader:${GREEN}LOCKED${RESET}"
 else
     echo -e "${BLUE}Bootloader:${RED}UNLOCKED${RESET}"
 fi
 if [ $(getprop sys.oem_unlock_allowed) = 0 ];then
-    echo -e "${BLUE}OEM unlock:${GREEN}UNALLOWED${RESET}"
+    echo -e "${BLUE}OEM Unlock:${GREEN}UN,ALLOW${RESET}"
 else
-    echo -e "${BLUE}OEM unlock:${RED}ALLOWED${RESET}"
+    echo -e "${BLUE}OEM Unlock:${RED}ALLOW${RESET}"
 fi
 exit 0
