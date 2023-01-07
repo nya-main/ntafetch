@@ -34,17 +34,17 @@ echo -e "${BLUE}CPU Model:${GREEN}$(cat /proc/cpuinfo | grep Hardware | sed "s/.
 echo -e "${BLUE}Main ABI:${GREEN}$(getprop ro.product.cpu.abi)${RESET}"
 echo -e "${BLUE}Support ABIS:${GREEN}$(getprop ro.product.cpu.abilist)${RESET}"
 echo -e "${BLUE}Total Mem:${GREEN}`TM=$(free -m |grep "Mem" | awk '{print $2}') && echo ${TM}` MiB${RESET}"
-echo -e "${BLUE}Used Mem:${GREEN}`UM=$(free -m |grep "Mem" | awk '{print $3}') && echo ${UM}` MiB(3)${RESET}"
-echo -e "${BLUE}Free Mem:${GREEN}`FM=$(free -m |grep "Mem" | awk '{print $4}') && echo ${FM}` MiB(3)${RESET}"
+echo -e "${BLUE}Used Mem:${GREEN}`UM=$(free -m |grep "Mem" | awk '{print $3}') && echo ${UM}` MiB(1)${RESET}"
+echo -e "${BLUE}Free Mem:${GREEN}`FM=$(free -m |grep "Mem" | awk '{print $4}') && echo ${FM}` MiB(1)${RESET}"
 su > /dev/null 2>&1
 exitstatus=$?
 if [ ${exitstatus} = 1 ];then
-    echo -e "${BLUE}ROOT:${GREEN}No ROOT(1)${RESET}"
+    echo -e "${BLUE}ROOT:${GREEN}No ROOT(2)${RESET}"
 else
     echo -e "${BLUE}ROOT:${RED}Found ROOT${RESET}"
 fi
 if [ "$(getprop ro.secureboot.lockstate)" == "locked" ];then
-    echo -e "${BLUE}Bootloader:${GREEN}LOCKED(2)${RESET}"
+    echo -e "${BLUE}Bootloader:${GREEN}LOCKED(3)${RESET}"
 else
     echo -e "${BLUE}Bootloader:${RED}UNLOCKED${RESET}"
 fi
@@ -53,9 +53,8 @@ if [ $(getprop sys.oem_unlock_allowed) = 0 ];then
 else
     echo -e "${BLUE}OEM Unlock:${RED}ALLOW${RESET}"
 fi
-
-
-echo -e "${GREEN}1)Maybe you disable the root permission of termux${RESET}"
-echo -e "${GREEN}2)UNBELIEVABLE because you can use fastboot to relock your Android phone${RESET}"
-echo -e "${GREEN}3)UNBELIEVABLE because of linux Kernel's Mem control${RESET}"
+echo -e "\n"
+echo -e "${GREEN}1)UNBELIEVABLE because of linux Kernel's Mem control${RESET}"
+echo -e "${GREEN}2)Maybe you disable the root permission of termux${RESET}"
+echo -e "${GREEN}3)UNBELIEVABLE because you can use fastboot to relock your Android phone${RESET}"
 exit 0
