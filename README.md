@@ -2,7 +2,8 @@
 
 ~~相信你看到这个名字就能想到这是一个什么东西了.没错，就是一个类似于neofetch、uwufetch的东西~~  
 
-## 只支持termux！
+*只支持termux！*  
+*基于termux,getprop,uname命令*
 
 ## 安装
 
