@@ -34,9 +34,8 @@ echo -e "${BLUE}locale:${GREEN}$(getprop ro.product.locale)${RESET}"
 echo -e "${BLUE}CPU Model:${GREEN}$(getprop ro.hardware)-$(getprop ro.board.platform)${RESET}"
 echo -e "${BLUE}Main ABI:${GREEN}$(getprop ro.product.cpu.abi)${RESET}"
 echo -e "${BLUE}Support ABIS:${GREEN}$(getprop ro.product.cpu.abilist)${RESET}"
-echo -e "${BLUE}Total Mem:${GREEN}`TM=$(free -m |grep "Mem" | awk '{print $2}') && echo ${TM}` MiB${RESET}"
-echo -e "${BLUE}Used Mem:${GREEN}`UM=$(free -m |grep "Mem" | awk '{print $3}') && echo ${UM}` MiB(1)${RESET}"
-echo -e "${BLUE}Free Mem:${GREEN}`FM=$(free -m |grep "Mem" | awk '{print $4}') && echo ${FM}` MiB(1)${RESET}"
+echo -e "${BLUE}Total Mem:${GREEN}$(TM=$(free -m |grep "Mem" | awk '{print $2}') && echo ${TM} MiB)${RESET}"
+echo -e "${BLUE}Used Mem:${GREEN}$(UM=$(free -m |grep "Mem" | awk '{print $3}') && echo ${UM} MiB)(1)${RESET}"
 su > /dev/null 2>&1
 exitstatus=$?
 if [ ${exitstatus} = 1 ];then
@@ -59,13 +58,16 @@ if [ $(getprop sys.oem_unlock_allowed) = 0 ];then
 else
     echo -e "${BLUE}OEM:${RED}ALLOW${RESET}" 
 fi
-if [ "$(getprop init.svc.adbd)" == "stopped" ];then
+if [ "$(getprop init.svc.adbd)" == "stopped" ] || [ "`ps -e | grep adb && echo $?`" = 1 ];then
     echo -e "${BLUE}adbd service:${GREEN}$(getprop init.svc.adbd)${RESET}"
 else
     echo -e "${BLUE}adbd service:${RED}$(getprop init.svc.adbd)${RESET}"
 fi
-
-echo -e "\n"
+if [ "$(getprop sys.usb.config)" == "adb" ];then
+    echo -e "${BLUE}usb debug mode:${RED}ON(adb)${RESET}"
+else
+    echo -e "${BLUE}usb debug mode:${GREEN}OFF${RESET}"
+fi
 echo -e "${GREEN}1)UNBELIEVABLE because of linux Kernel's Mem control${RESET}"
 echo -e "${GREEN}2)Maybe you disable the root permission of termux${RESET}"
 echo -e "${GREEN}3)UNBELIEVABLE because you can use fastboot to relock your Android phone${RESET}"
