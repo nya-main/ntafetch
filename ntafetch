@@ -53,7 +53,7 @@ if [ "$(getprop ro.oem_unlock_supported)" == "true" ];then
 else
     echo -e "${BLUE}OEM Unlock Support:${RED}Unsupport${RESET}"
 fi
-if [ $(getprop sys.oem_unlock_allowed) = 0 ];then
+if [ "$(getprop sys.oem_unlock_allowed)" = 0 ];then
     echo -e "${BLUE}OEM:${GREEN}UNALLOW${RESET}"
 else
     echo -e "${BLUE}OEM:${RED}ALLOW${RESET}" 
