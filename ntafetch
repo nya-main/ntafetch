@@ -11,8 +11,8 @@ if [ "$(uname -o)" != "Android" ];then
 fi
 #echo -e "${BLUE}:${GREEN}${RESET}"
 ifconfig | grep tun > /dev/null 2>&1
-exitstatus=$?
-if [ "$exitstatus" == "0" ];then
+EXITSTATUS=$?
+if [ "$EXITSTATUS" == "0" ];then
     echo -e "${BLUE}VPN:${GREEN}CONNECTED${RESET}"
 else
     echo -e "${BLUE}VPN:${GREEN}DISCONNECTED${RESET}"
