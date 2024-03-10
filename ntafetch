@@ -5,17 +5,17 @@ YELOW="\E[1;33m"
 BLUE="\E[1;34m"
 PINK="\E[1;35m"
 RESET="\E[0m"
-if [ "$(uname -o)" != "Android" ];then
-    echo -e "${RED}YOU'RE NOT RUNNING THIS PROGRAM IN ANDROID DEVICE!\n你没有使用安卓设备运行这个脚本！${RESET}"
-    exit 0
+if [ "$(uname -o)" != "Android" ]; then
+	echo -e "${RED}YOU'RE NOT RUNNING THIS PROGRAM IN ANDROID DEVICE!\n你没有使用安卓设备运行这个脚本！${RESET}"
+	exit 0
 fi
 #echo -e "${BLUE}:${GREEN}${RESET}"
-ifconfig | grep tun > /dev/null 2>&1
+ifconfig | grep tun >/dev/null 2>&1
 EXITSTATUS=$?
-if [ "$EXITSTATUS" == "0" ];then
-    echo -e "${BLUE}VPN:${GREEN}CONNECTED${RESET}"
+if [ "$EXITSTATUS" == "0" ]; then
+	echo -e "${BLUE}VPN:${GREEN}CONNECTED${RESET}"
 else
-    echo -e "${BLUE}VPN:${GREEN}DISCONNECTED${RESET}"
+	echo -e "${BLUE}VPN:${GREEN}DISCONNECTED${RESET}"
 fi
 echo -e "${BLUE}OS:${GREEN}$(uname -o)${RESET}"
 echo -e "${BLUE}ARCH:${GREEN}$(uname -m)${RESET}"
@@ -25,50 +25,51 @@ echo -e "${BLUE}Kernel version:${GREEN}$(uname -v)${RESET}"
 echo -e "${BLUE}Android version:${GREEN}$(getprop ro.build.version.release)${RESET}"
 echo -e "${BLUE}tty of this shell:${GREEN}$(tty)${RESET}"
 echo -e "${BLUE}time zone:${GREEN}$(getprop persist.sys.timezone)${RESET}"
-echo -e "${BLUE}brand:${GREEN}$(getprop ro.vendor.product.brand)${RESET}"
-echo -e "${BLUE}UI version:${GREEN}$(getprop ro.build.version.incremental)${RESET}"
+echo -e "${BLUE}brand:${GREEN}$(getprop ro.product.brand)${RESET}"
+echo -e "${BLUE}OS version:${GREEN}$(getprop ro.build.version.incremental)${RESET}"
 echo -e "${BLUE}device model:${GREEN}$(getprop ro.product.model)${RESET}"
 echo -e "${BLUE}fingerprint:${GREEN}$(getprop ro.build.fingerprint)${RESET}"
-echo -e "${BLUE}device name:${GREEN}$(getprop persist.sys.device_name)${RESET}"
+echo -e "${BLUE}device name:${GREEN}$(getprop ro.product.product.device)${RESET}"
 echo -e "${BLUE}locale:${GREEN}$(getprop ro.product.locale)${RESET}"
 echo -e "${BLUE}CPU Model:${GREEN}$(getprop ro.hardware)-$(getprop ro.board.platform)${RESET}"
 echo -e "${BLUE}Main ABI:${GREEN}$(getprop ro.product.cpu.abi)${RESET}"
 echo -e "${BLUE}Support ABIS:${GREEN}$(getprop ro.product.cpu.abilist)${RESET}"
-echo -e "${BLUE}Total Mem:${GREEN}$(TM=$(free -m |grep "Mem" | awk '{print $2}') && echo ${TM} MiB)${RESET}"
-echo -e "${BLUE}Used Mem:${GREEN}$(UM=$(free -m |grep "Mem" | awk '{print $3}') && echo ${UM} MiB)(1)${RESET}"
-su > /dev/null 2>&1
+echo -e "${BLUE}Total Mem:${GREEN}$(TM=$(free -m | grep "Mem" | awk '{print $2}') && echo ${TM} MiB)${RESET}"
+echo -e "${BLUE}Used Mem:${GREEN}$(UM=$(free -m | grep "Mem" | awk '{print $3}') && echo ${UM} MiB)(1)${RESET}"
+/system/bin/su -c exit >/dev/null 2>&1
 exitstatus=$?
-if [ ${exitstatus} = 1 ];then
-    echo -e "${BLUE}ROOT:${GREEN}No ROOT(2)${RESET}"
+if [[ "${exitstatus}" != "127" || "$(id -u)" == "0" || -e /data/adb/magisk || -e /data/adb/ksu || -e /data/adb/ap ]]; then
+	ROOT=true
 else
-    echo -e "${BLUE}ROOT:${RED}ROOTED${RESET}"
+	ROOT=false
 fi
-if [ "$(getprop ro.secureboot.lockstate)" == "locked" ];then
-    echo -e "${BLUE}Bootloader:${GREEN}LOCKED(3)${RESET}"
+if $ROOT; then
+	echo -e "${BLUE}ROOT: ${RED}ROOTED${RESET}"
 else
-    echo -e "${BLUE}Bootloader:${RED}UNLOCKED${RESET}"
+	echo -e "${BLUE}ROOT: ${GREEN}UNROOTED${RESET}"
 fi
-if [ "$(getprop ro.oem_unlock_supported)" == "true" ];then
-    echo -e "${BLUE}OEM Unlock Support:${GREEN}Support${RESET}"
+if [ "$(getprop ro.secureboot.lockstate)" == "locked" ]; then
+	echo -e "${BLUE}Bootloader:${GREEN}LOCKED(3)${RESET}"
 else
-    echo -e "${BLUE}OEM Unlock Support:${RED}Unsupport${RESET}"
+	echo -e "${BLUE}Bootloader:${RED}UNLOCKED${RESET}"
 fi
-if [ "$(getprop sys.oem_unlock_allowed)" = 0 ];then
-    echo -e "${BLUE}OEM:${GREEN}UNALLOW${RESET}"
+if [ "$(getprop ro.oem_unlock_supported)" == "true" ]; then
+	echo -e "${BLUE}OEM Unlock Support:${GREEN}Support${RESET}"
 else
-    echo -e "${BLUE}OEM:${RED}ALLOW${RESET}" 
+	echo -e "${BLUE}OEM Unlock Support:${RED}Unsupport${RESET}"
 fi
-if [ "$(getprop init.svc.adbd)" == "stopped" ];then
-    echo -e "${BLUE}adbd service:${GREEN}$(getprop init.svc.adbd)${RESET}"
+if [ "$(getprop sys.oem_unlock_allowed)" = 0 ]; then
+	echo -e "${BLUE}OEM:${GREEN}UNALLOW${RESET}"
 else
-    echo -e "${BLUE}adbd service:${RED}$(getprop init.svc.adbd)${RESET}"
+	echo -e "${BLUE}OEM:${RED}ALLOW${RESET}"
 fi
-if [ "$(getprop sys.usb.config)" == "adb" ];then
-    echo -e "${BLUE}usb debug mode:${RED}ON(adb)${RESET}"
+if [ "$(getprop init.svc.adbd)" == "stopped" ]; then
+	echo -e "${BLUE}adbd service:${GREEN}$(getprop init.svc.adbd)${RESET}"
 else
-    echo -e "${BLUE}usb debug mode:${GREEN}OFF${RESET}"
+	echo -e "${BLUE}adbd service:${RED}$(getprop init.svc.adbd)${RESET}"
 fi
-echo -e "${GREEN}1)UNBELIEVABLE because of linux Kernel's Mem control${RESET}"
-echo -e "${GREEN}2)Maybe you disable the root permission of termux${RESET}"
-echo -e "${GREEN}3)UNBELIEVABLE because you can use fastboot to relock your Android phone${RESET}"
-exit 0
+if [ "$(getprop sys.usb.config)" == "adb" ]; then
+	echo -e "${BLUE}usb debug mode:${RED}ON(adb)${RESET}"
+else
+	echo -e "${BLUE}usb debug mode:${GREEN}OFF${RESET}"
+fi
